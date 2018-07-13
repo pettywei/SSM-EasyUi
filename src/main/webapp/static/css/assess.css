@@ -1,0 +1,14 @@
+body { margin:auto; font-size:14px; background-repeat: repeat-x;  background-color:#F6E7D0;}
+table { border:0; margin:10px auto;}
+
+a:link { color:#fff; text-decoration: none; }
+a:visited { color:#fff; text-decoration: none;}
+a:active { color:#fff; text-decoration: none;}
+a:hover { color:#ffff00; text-decoration: underline;}
+
+.info { font-size:20px; background-color:#F6E7D0; padding:10px 20px; line-height:30px;}
+.info2 { background-color:#DA4A4A; height:3px;}
+
+.info1 { font-size:14px; background-color:#F6E7D0; padding:10px 20px; line-height:30px;}
+
+.item { padding:5px 20px; }

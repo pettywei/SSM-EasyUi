@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ssm.system.mapper.DictMapper">
+
+	<!-- Cache 配置 -->
+    <cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true" />
+    
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 id,	parentId,	code,	name,	sequence,	status,	createTime
+	</sql>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="selectByPrimaryKey" resultType="dict" parameterType="java.lang.Long">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM tb_dict
+		 WHERE id = #{id}
+	</select>
+
+	<!--删除：根据主键ID删除-->
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		 DELETE FROM tb_dict
+		 WHERE id = #{id}
+	</delete>
+
+	<!-- 添加 -->
+	<insert id="insert" parameterType="dict">
+		 INSERT INTO tb_dict
+ 		(id,parentId,code,name,sequence,status,createTime) 
+		 VALUES 
+ 		(#{id},#{parentId},#{code},#{name},#{sequence},#{status},#{createTime}) 
+	</insert>
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insertSelective" parameterType="dict">
+		 INSERT INTO tb_dict
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null">
+				 id,
+			</if>
+			<if test="parentId != null">
+				 parentId,
+			</if>
+			<if test="code != null">
+				 code,
+			</if>
+			<if test="name != null">
+				 name,
+			</if>
+			<if test="sequence != null">
+				 sequence,
+			</if>
+			<if test="status != null">
+				 status,
+			</if>
+			<if test="createTime != null">
+				 createTime,
+			</if>
+
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id!=null">
+				 #{id},
+			</if>
+			<if test="parentId!=null">
+				 #{parentId},
+			</if>
+			<if test="code!=null">
+				 #{code},
+			</if>
+			<if test="name!=null">
+				 #{name},
+			</if>
+			<if test="sequence!=null">
+				 #{sequence},
+			</if>
+			<if test="status!=null">
+				 #{status},
+			</if>
+			<if test="createTime!=null">
+				 #{createTime},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKeySelective" parameterType="dict">
+		 UPDATE tb_dict
+ 		 <set> 
+			<if test="parentId != null">
+				 parentId = #{parentId},
+			</if>
+			<if test="code != null">
+				 code = #{code},
+			</if>
+			<if test="name != null">
+				 name = #{name},
+			</if>
+			<if test="sequence != null">
+				 sequence = #{sequence},
+			</if>
+			<if test="status != null">
+				 status = #{status},
+			</if>
+			<if test="createTime != null">
+				 createTime = #{createTime},
+			</if>
+
+ 		 </set>
+		 WHERE id = #{id}
+	</update>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKey" parameterType="dict">
+		 UPDATE tb_dict
+		 SET 
+			 parentId = #{parentId},
+			 code = #{code},
+			 name = #{name},
+			 sequence = #{sequence},
+			 status = #{status},
+			 createTime = #{createTime}
+		 WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 页面查询条件 -->
+	<sql id="Select_Condition">
+		<if test="condition.name != null">
+			AND INSTR(name, #{condition.name})>0
+		</if>
+		<if test="condition.code != null">
+			AND code = #{condition.code}
+		</if>
+		<if test="condition.status != null">
+			AND status = #{condition.status}
+		</if>
+	</sql>
+	
+	<!-- 根据条件查询 -->
+	<select id="selectListByCondition" parameterType="PageInfo" resultType="dict">
+        SELECT 
+         <include refid="Base_Column_List"/> 
+        FROM tb_dict 
+        WHERE 1=1 
+        <include refid="Select_Condition" /> 
+        limit #{from},#{size}
+    </select>
+    
+    <select id="selectCountByCondition"  parameterType="PageInfo" resultType="Integer">
+    	SELECT COUNT(*) 
+    	FROM tb_dict 
+    	WHERE 1=1 
+    	<include refid="Select_Condition" />
+    </select>
+    
+    
+    
+
+</mapper>

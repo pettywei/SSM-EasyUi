@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ssm.system.mapper.MenuMapper">
+
+	<!-- Cache 配置 -->
+    <cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true" />
+    
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 id,	parentId,	name,	url,	icon,	sequence,	status,	createTime,	updateTime
+	</sql>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="selectByPrimaryKey" resultType="menu" parameterType="java.lang.Long">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM tb_menu
+		 WHERE id = #{id}
+	</select>
+
+	<!--删除：根据主键ID删除-->
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		 DELETE FROM tb_menu
+		 WHERE id = #{id}
+	</delete>
+
+	<!-- 添加 -->
+	<insert id="insert" parameterType="menu">
+		 INSERT INTO tb_menu
+ 		(id,parentId,name,url,icon,sequence,status,createTime,updateTime) 
+		 VALUES 
+ 		(#{id},#{parentId},#{name},#{url},#{icon},#{sequence},#{status},#{createTime},#{updateTime}) 
+	</insert>
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insertSelective" parameterType="menu">
+		 INSERT INTO tb_menu
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null">
+				 id,
+			</if>
+			<if test="parentId != null">
+				 parentId,
+			</if>
+			<if test="name != null">
+				 name,
+			</if>
+			<if test="url != null">
+				 url,
+			</if>
+			<if test="icon != null">
+				 icon,
+			</if>
+			<if test="sequence != null">
+				 sequence,
+			</if>
+			<if test="status != null">
+				 status,
+			</if>
+			<if test="createTime != null">
+				 createTime,
+			</if>
+			<if test="updateTime != null">
+				 updateTime,
+			</if>
+
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id!=null">
+				 #{id},
+			</if>
+			<if test="parentId!=null">
+				 #{parentId},
+			</if>
+			<if test="name!=null">
+				 #{name},
+			</if>
+			<if test="url!=null">
+				 #{url},
+			</if>
+			<if test="icon!=null">
+				 #{icon},
+			</if>
+			<if test="sequence!=null">
+				 #{sequence},
+			</if>
+			<if test="status!=null">
+				 #{status},
+			</if>
+			<if test="createTime!=null">
+				 #{createTime},
+			</if>
+			<if test="updateTime!=null">
+				 #{updateTime},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKeySelective" parameterType="menu">
+		 UPDATE tb_menu
+ 		 <set> 
+			<if test="parentId != null">
+				 parentId = #{parentId},
+			</if>
+			<if test="name != null">
+				 name = #{name},
+			</if>
+			<if test="url != null">
+				 url = #{url},
+			</if>
+			<if test="icon != null">
+				 icon = #{icon},
+			</if>
+			<if test="sequence != null">
+				 sequence = #{sequence},
+			</if>
+			<if test="status != null">
+				 status = #{status},
+			</if>
+			<if test="createTime != null">
+				 createTime = #{createTime},
+			</if>
+			<if test="updateTime != null">
+				 updateTime = #{updateTime},
+			</if>
+
+ 		 </set>
+		 WHERE id = #{id}
+	</update>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKey" parameterType="menu">
+		 UPDATE tb_menu
+		 SET 
+			 parentId = #{parentId},
+			 name = #{name},
+			 url = #{url},
+			 icon = #{icon},
+			 sequence = #{sequence},
+			 status = #{status},
+			 createTime = #{createTime},
+			 updateTime = #{updateTime}
+		 WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 页面查询条件 -->
+	<sql id="Select_Condition">
+		<if test="condition.name != null">
+			AND INSTR(name, #{condition.name})>0
+		</if>
+		<if test="condition.status != null">
+			AND status = #{condition.status}
+		</if>
+	</sql>
+	
+	<!-- 根据条件查询 -->
+	<select id="selectListByCondition" parameterType="PageInfo" resultType="menu">
+        SELECT 
+         <include refid="Base_Column_List"/> 
+        FROM tb_menu 
+        WHERE 1=1 
+        <include refid="Select_Condition" /> 
+        limit #{from},#{size}
+    </select>
+    
+    <select id="selectCountByCondition"  parameterType="PageInfo" resultType="Integer">
+    	SELECT COUNT(*) 
+    	FROM tb_menu 
+    	WHERE 1=1 
+    	<include refid="Select_Condition" />
+    </select>
+    
+    
+    <!-- 根据多个id查询列表 -->
+	<select id="selectListByIds" resultType="menu">
+        SELECT 
+         <include refid="Base_Column_List"/> 
+        FROM tb_menu 
+        WHERE 1=1
+		AND id in 
+		<foreach item="ids" index="index" collection="list" open="(" separator="," close=")">  
+		 #{ids} 
+		</foreach>
+		ORDER BY sequence
+    </select>
+    
+    
+    <!-- 查询条件 -->
+    <sql id="Select_Map">
+		<if test="parentId != null">
+			AND parentId = #{parentId}
+		</if>
+		<if test="status != null">
+			AND status = #{status}
+		</if>
+	</sql>
+    <!-- 根据条件查询 -->
+	<select id="selectListByMap" parameterType="Map" resultType="menu">
+        SELECT 
+         <include refid="Base_Column_List"/> 
+        FROM tb_menu 
+        WHERE 1=1 
+        <include refid="Select_Map" />
+    </select>
+
+</mapper>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ssm.system.mapper.RoleMapper">
+
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 id,	name,	menuIds,	status,	createTime,	updateTime
+	</sql>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="selectByPrimaryKey" resultType="role" parameterType="java.lang.Long">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM tb_role
+		 WHERE id = #{id}
+	</select>
+
+	<!--删除：根据主键ID删除-->
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		 DELETE FROM tb_role
+		 WHERE id = #{id}
+	</delete>
+
+	<!-- 添加 -->
+	<insert id="insert" parameterType="role">
+		 INSERT INTO tb_role
+ 		(id,name,menuIds,status,createTime,updateTime) 
+		 VALUES 
+ 		(#{id},#{name},#{menuIds},#{status},#{createTime},#{updateTime}) 
+	</insert>
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insertSelective" parameterType="role">
+		 INSERT INTO tb_role
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null">
+				 id,
+			</if>
+			<if test="name != null">
+				 name,
+			</if>
+			<if test="menuIds != null">
+				 menuIds,
+			</if>
+			<if test="status != null">
+				 status,
+			</if>
+			<if test="createTime != null">
+				 createTime,
+			</if>
+			<if test="updateTime != null">
+				 updateTime,
+			</if>
+
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id!=null">
+				 #{id},
+			</if>
+			<if test="name!=null">
+				 #{name},
+			</if>
+			<if test="menuIds!=null">
+				 #{menuIds},
+			</if>
+			<if test="status!=null">
+				 #{status},
+			</if>
+			<if test="createTime!=null">
+				 #{createTime},
+			</if>
+			<if test="updateTime!=null">
+				 #{updateTime},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKeySelective" parameterType="role">
+		 UPDATE tb_role
+ 		 <set> 
+			<if test="name != null">
+				 name = #{name},
+			</if>
+			<if test="menuIds != null">
+				 menuIds = #{menuIds},
+			</if>
+			<if test="status != null">
+				 status = #{status},
+			</if>
+			<if test="createTime != null">
+				 createTime = #{createTime},
+			</if>
+			<if test="updateTime != null">
+				 updateTime = #{updateTime},
+			</if>
+
+ 		 </set>
+		 WHERE id = #{id}
+	</update>
+
+	<!-- 修 改-->
+	<update id="updateByPrimaryKey" parameterType="role">
+		 UPDATE tb_role
+		 SET 
+			 name = #{name},
+			 menuIds = #{menuIds},
+			 status = #{status},
+			 createTime = #{createTime},
+			 updateTime = #{updateTime}
+		 WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 页面查询条件 -->
+	<sql id="Select_Condition">
+		<if test="condition.name != null">
+			AND INSTR(name, #{condition.name})>0
+		</if>
+		<if test="condition.status != null">
+			AND status = #{condition.status}
+		</if>
+	</sql>
+	
+	<!-- 根据条件查询 -->
+	<select id="selectListByCondition" parameterType="PageInfo" resultType="role">
+        SELECT 
+         <include refid="Base_Column_List"/> 
+        FROM tb_role 
+        WHERE 1=1 
+        <include refid="Select_Condition" /> 
+        limit #{from},#{size}
+    </select>
+    
+    <select id="selectCountByCondition"  parameterType="PageInfo" resultType="Integer">
+    	SELECT COUNT(*) 
+    	FROM tb_role 
+    	WHERE 1=1 
+    	<include refid="Select_Condition" />
+    </select>
+    
+    
+    <!-- 根据多个id查询列表 -->
+	<select id="selectListByIds" resultType="role">
+        SELECT 
+         <include refid="Base_Column_List"/> 
+        FROM tb_role 
+        WHERE 1=1
+		AND id in 
+		<foreach item="ids" index="index" collection="list" open="(" separator="," close=")">  
+		 #{ids} 
+		</foreach> 
+    </select>
+    
+    <!-- 查询有效的列表 -->
+	<select id="selectVaildList" resultType="role">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM tb_role
+		 WHERE 1=1
+		 AND status = 0 
+	</select>
+	
+</mapper>
